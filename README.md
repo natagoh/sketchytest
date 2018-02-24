@@ -1,6 +1,7 @@
-# Hand Signs Recognition with PyTorch
+# Sketch Recognition with PyTorch
 
-*Authors: Surag Nair, Olivier Moindrot and Guillaume Genthial*
+*Authors: Natasha Goenawan and Mandy Lu*
+adapted from Hnd Signs Recognition with PyTorch by Surag Nair, Olivier Moindrot and Guillaume Genthial*
 
 Take the time to read the [tutorials](https://cs230-stanford.github.io/project-starter-code.html).
 
