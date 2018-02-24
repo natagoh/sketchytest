@@ -4,6 +4,7 @@ import os
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
+import platform
 
 # borrowed from http://pytorch.org/tutorials/advanced/neural_style_tutorial.html
 # and http://pytorch.org/tutorials/beginner/data_loading_tutorial.html
@@ -34,7 +35,10 @@ class SIGNSDataset(Dataset):
         self.filenames = os.listdir(data_dir)
         self.filenames = [os.path.join(data_dir, f) for f in self.filenames if f.endswith('.jpg')]
 
-        self.labels = [int(filename.split('\\')[-1][0]) for filename in self.filenames]
+        if platform.system() == 'Windows':
+            self.labels = [int(filename.split('\\')[-1][0]) for filename in self.filenames]
+        else:
+            self.labels = [int(filename.split('/')[-1][0]) for filename in self.filenames]
         self.transform = transform
 
     def __len__(self):

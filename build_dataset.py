@@ -20,6 +20,7 @@ representative as possible, we'll take 20% of "train_signs" as val set.
 import argparse
 import random
 import os
+import platform
 
 from PIL import Image
 from tqdm import tqdm
@@ -27,18 +28,43 @@ from tqdm import tqdm
 SIZE = 64
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_dir', default='data/SIGNS', help="Directory with the SIGNS dataset")
-parser.add_argument('--output_dir', default='data/64x64_SIGNS', help="Where to write the new data")
+parser.add_argument('--data_dir', default='data/SKETCHES', help="Directory with the SIGNS dataset")
+parser.add_argument('--output_dir', default='data/64x64_SKETCHES', help="Where to write the new data")
 
 
-def resize_and_save(filename, output_dir, size=SIZE):
+def resize_and_save(filename, output_dir, new_name, size=SIZE):
     """Resize the image contained in `filename` and save it to the `output_dir`"""
     image = Image.open(filename)
     # Use bilinear interpolation instead of the default "nearest neighbor" method
     image = image.resize((size, size), Image.BILINEAR)
-    test  =os.path.join(output_dir, filename.split('/')[-1])
-    test = os.path.join(r'C:\Users\gohna\Documents\17-18-2 Winter\CS 230\cs230-code-examples\pytorch\vision', test)
-    image.save(os.path.join(output_dir, filename.split('\\')[-1]))
+    image.save(os.path.join(output_dir, new_name))
+
+# extract the classes from the data
+# params: directory of data with separate folders for each class
+# output: list of classes
+def extract_classes(data_dir):
+    classes = []
+    for item in os.listdir(data_dir):
+        if item != "filelist.txt":
+            classes.append(item)
+
+    return classes
+
+# extracts images from individual folders and compiles into one folder
+def compile_images(data_dir, classes, dst_dir):
+    for clas in classes:
+        curr_dir = os.path.join(data_dir, clas)
+        for f in os.listdir(curr_dir):
+            if (f.endswith('.png')):
+                if platform.system() == 'Windows':
+                    src = os.path.abspath(curr_dir) + '\\' + f
+                else:
+                    src = os.path.abspath(curr_dir) + '/' + f
+
+                num = f.split(".")[0]
+                new_name = clas + "_" + num + ".png"
+                resize_and_save(src, dst_dir, new_name)
+        print('done renaming imgs in class: ', clas)
 
 
 if __name__ == '__main__':
@@ -46,9 +72,21 @@ if __name__ == '__main__':
 
     assert os.path.isdir(args.data_dir), "Couldn't find the dataset at {}".format(args.data_dir)
     # Define the data directories
-    train_data_dir = os.path.join(args.data_dir, 'train_signs')
-    test_data_dir = os.path.join(args.data_dir, 'test_signs')
-    print(train_data_dir)
+    #train_data_dir = os.path.join(args.data_dir, 'train_signs')
+    #test_data_dir = os.path.join(args.data_dir, 'test_signs')
+    #print(train_data_dir)
+
+    # extract list of classes
+    classes = extract_classes(args.data_dir)
+
+    # rename images (append classification to filename)
+    par_dir = os.path.abspath(os.path.join(args.data_dir, os.pardir))
+    dst_data_dir = os.path.join(par_dir, '64x64_SKETCHES')
+    if not os.path.exists(dst_data_dir):
+        os.makedirs(dst_data_dir)
+    compile_images(args.data_dir, classes, os.path.abspath(dst_data_dir))
+
+    '''
 
     # Get the filenames in each directory (train and test)
     filenames = os.listdir(train_data_dir)
@@ -89,3 +127,4 @@ if __name__ == '__main__':
             resize_and_save(filename, output_dir_split, size=SIZE)
 
     print("Done building dataset")
+    '''
