@@ -39,7 +39,7 @@ SKETCHES/
         ...
 ```
 
-The images are named following `{label}_{id}.png` where the label is in `[airplane, alarm clock, ... , zebra]`.
+The images are named following `{label}_{id}.png` where the label is in `[0, 250]` and each label corresponds to `[airplane, alarm clock, ..., zebra]`.
 The training set contains ~16,000 images and the test set contains ~2,000 images.
 
 Once the download is complete, move the dataset into `data/SKETCHES`.
