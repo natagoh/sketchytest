@@ -1,6 +1,6 @@
-"""Split the SIGNS dataset into train/val/test and resize images to 64x64.
+"""Split the SKETCHES dataset into train/val/test and resize images to 64x64.
 
-The SIGNS dataset comes into the following format:
+The SKETCHES dataset comes into the following format:
     train_signs/
         0_IMG_5864.jpg
         ...
@@ -29,7 +29,7 @@ from tqdm import tqdm
 SIZE = 64
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--data_dir', default='data/SKETCHES', help="Directory with the SIGNS dataset")
+parser.add_argument('--data_dir', default='data/SKETCHES', help="Directory with the SKETCHES dataset")
 parser.add_argument('--output_dir', default='data/64x64_SKETCHES', help="Where to write the new data")
 
 
@@ -114,13 +114,7 @@ def split_data(dst_data_dir):
         print("Processing {} data, saving preprocessed data to {}".format(split, output_dir_split))
         for filename in tqdm(filenames[split]):
             save_path = os.path.join(output_dir_split, filename)
-            #print(save_path)
             shutil.move(os.path.join(train_data_dir, filename), save_path)
-            #print(split, filename, output_dir_split)
-            #image = Image.open(os.path.join(train_data_dir, filename))
-            #save_path = os.path.join(output_dir_split, filename)
-            #print(save_path)
-            #image.save(save_path)
 
 if __name__ == '__main__':
     args = parser.parse_args()
