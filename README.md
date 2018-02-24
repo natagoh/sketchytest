@@ -24,30 +24,29 @@ When you're done working on the project, deactivate the virtual environment with
 Given an image of a hand doing a sign representing 0, 1, 2, 3, 4 or 5, predict the correct label.
 
 
-## Download the SIGNS dataset
+## Download the SKETCHES dataset
 
-For the vision example, we will used the SIGNS dataset created for this class. The dataset is hosted on google drive, download it [here][SIGNS].
+For the vision example, we will used the SKETCHES dataset created by [Eitz et al 2012]. The dataset is hosted on their website, download it [here][SKETCHES].
 
-This will download the SIGNS dataset (~1.1 GB) containing photos of hands signs making numbers between 0 and 5.
-Here is the structure of the data:
+This will download the SKETCHES dataset (~524 MB) containing black and white sketches across 250 categories, which include airplane, alarm clock, angel, etc.
 ```
-SIGNS/
-    train_signs/
-        0_IMG_5864.jpg
+SKETCHES/
+    airplane/
+        1.png
         ...
-    test_signs/
-        0_IMG_5942.jpg
+    alarm clock/
+        81.png
         ...
 ```
 
-The images are named following `{label}_IMG_{id}.jpg` where the label is in `[0, 5]`.
-The training set contains 1,080 images and the test set contains 120 images.
+The images are named following `{label}_{id}.png` where the label is in `[airplane, alarm clock, ... , zebra]`.
+The training set contains ~16,000 images and the test set contains ~2,000 images.
 
-Once the download is complete, move the dataset into `data/SIGNS`.
-Run the script `build_dataset.py` which will resize the images to size `(64, 64)`. The new resized dataset will be located by default in `data/64x64_SIGNS`:
+Once the download is complete, move the dataset into `data/SKETCHES`.
+Run the script `build_dataset.py` which will resize the images to size `(64, 64)`. The new resized dataset will be located by default in `data/64x64_SKETCHES`:
 
 ```bash
-python build_dataset.py --data_dir data/SIGNS --output_dir data/64x64_SIGNS
+python build_dataset.py --data_dir data/SIGNS --output_dir data/64x64_SKETCHES
 ```
 
 
@@ -56,7 +55,7 @@ python build_dataset.py --data_dir data/SIGNS --output_dir data/64x64_SIGNS
 
 1. __Build the dataset of size 64x64__: make sure you complete this step before training
 ```bash
-python build_dataset.py --data_dir data/SIGNS --output_dir data/64x64_SIGNS
+python build_dataset.py --data_dir data/SKETCHES --output_dir data/64x64_SKETCHES
 ```
 
 2. __Your first experiment__ We created a `base_model` directory for you under the `experiments` directory. It contains a file `params.json` which sets the hyperparameters for the experiment. It looks like
@@ -72,13 +71,13 @@ For every new experiment, you will need to create a new directory under `experim
 
 3. __Train__ your experiment. Simply run
 ```
-python train.py --data_dir data/64x64_SIGNS --model_dir experiments/base_model
+python train.py --data_dir data/64x64_SKETCHES --model_dir experiments/base_model
 ```
 It will instantiate a model and train it on the training set following the hyperparameters specified in `params.json`. It will also evaluate some metrics on the validation set.
 
 4. __Your first hyperparameters search__ We created a new directory `learning_rate` in `experiments` for you. Now, run
 ```
-python search_hyperparams.py --data_dir data/64x64_SIGNS --parent_dir experiments/learning_rate
+python search_hyperparams.py --data_dir data/64x64_SKETCHES --parent_dir experiments/learning_rate
 ```
 It will train and evaluate a model with different values of learning rate defined in `search_hyperparams.py` and create a new directory for each experiment under `experiments/learning_rate/`.
 
@@ -89,7 +88,7 @@ python synthesize_results.py --parent_dir experiments/learning_rate
 
 6. __Evaluation on the test set__ Once you've run many experiments and selected your best model and hyperparameters based on the performance on the validation set, you can finally evaluate the performance of your model on the test set. Run
 ```
-python evaluate.py --data_dir data/64x64_SIGNS --model_dir experiments/base_model
+python evaluate.py --data_dir data/64x64_SKETCHES --model_dir experiments/base_model
 ```
 
 
@@ -119,4 +118,4 @@ Once you get something working for your dataset, feel free to edit any part of t
 - [Tutorials](http://pytorch.org/tutorials/)
 - [PyTorch warm-up](https://github.com/jcjohnson/pytorch-examples)
 
-[SIGNS]: https://drive.google.com/file/d/1ufiR6hUKhXoAyiBNsySPkUwlvE_wfEHC/view?usp=sharing
+[SKETCHES]: http://cybertron.cg.tu-berlin.de/eitz/projects/classifysketch/sketches_png.zip
