@@ -53,7 +53,8 @@ def extract_classes(data_dir):
 
 # extracts images from individual folders and compiles into one folder
 def compile_images(data_dir, classes, dst_dir):
-    for clas in classes:
+    for i in range(len(classes)):
+        clas = classes[i]
         curr_dir = os.path.join(data_dir, clas)
         for f in os.listdir(curr_dir):
             if (f.endswith('.png')):
@@ -63,7 +64,7 @@ def compile_images(data_dir, classes, dst_dir):
                     src = os.path.abspath(curr_dir) + '/' + f
 
                 num = f.split(".")[0]
-                new_name = clas + "_" + num + ".png"
+                new_name = str(i) + "_" + num + ".png"
                 resize_and_save(src, dst_dir, new_name)
         print('done renaming imgs in class: ', clas)
 
@@ -125,10 +126,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     assert os.path.isdir(args.data_dir), "Couldn't find the dataset at {}".format(args.data_dir)
-    # Define the data directories
-    #train_data_dir = os.path.join(args.data_dir, 'train_signs')
-    #test_data_dir = os.path.join(args.data_dir, 'test_signs')
-    #print(train_data_dir)
 
     # extract list of classes
     classes = extract_classes(args.data_dir)
