@@ -202,3 +202,9 @@
 2018-02-23 20:17:36,216:INFO: - Train metrics: accuracy: 0.906 ; loss: 0.401
 2018-02-23 20:17:41,671:INFO: - Eval metrics : accuracy: 0.857 ; loss: 0.480
 2018-02-23 20:17:41,924:INFO: - Found new best accuracy
+2018-02-23 23:45:25,211:INFO: Loading the datasets...
+2018-02-23 23:48:06,496:INFO: Loading the datasets...
+2018-02-23 23:48:06,496:INFO: - done.
+2018-02-23 23:48:11,089:INFO: Starting training for 10 epoch(s)
+2018-02-23 23:48:11,089:INFO: Epoch 1/10
+2018-02-23 23:55:46,161:INFO: Loading the datasets...

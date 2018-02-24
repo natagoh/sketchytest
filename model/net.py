@@ -113,8 +113,8 @@ def accuracy(outputs, labels):
     Returns: (float) accuracy in [0,1]
     """
     outputs = np.argmax(outputs, axis=1)
-    #print("np.sum(outputs==labels): ", np.sum(outputs==labels), " np.sum(outputs==labels)/float(labels.size): ", np.sum(outputs==labels)/float(labels.size)) 
-    #print("outputs: ", outputs, " labels: ", labels) 
+    print("np.sum(outputs==labels): ", np.sum(outputs==labels), " np.sum(outputs==labels)/float(labels.size): ", np.sum(outputs==labels)/float(labels.size)) 
+    print("outputs: ", outputs, " labels: ", labels) 
     return np.sum(outputs==labels)/float(labels.size)
 
 

@@ -33,7 +33,7 @@ class SIGNSDataset(Dataset):
             transform: (torchvision.transforms) transformation to apply on image
         """
         self.filenames = os.listdir(data_dir)
-        self.filenames = [os.path.join(data_dir, f) for f in self.filenames if f.endswith('.jpg')]
+        self.filenames = [os.path.join(data_dir, f) for f in self.filenames if f.endswith('.png')]
 
         if platform.system() == 'Windows':
             self.labels = [int(filename.split('\\')[-1][0]) for filename in self.filenames]
@@ -77,7 +77,7 @@ def fetch_dataloader(types, data_dir, params):
 
     for split in ['train', 'val', 'test']:
         if split in types:
-            path = os.path.join(data_dir, "{}_signs".format(split))
+            path = os.path.join(data_dir, "{}_sketches".format(split))
 
             # use the train_transformer if training data, else use eval_transformer without random flip
             if split == 'train':
