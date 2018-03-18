@@ -10,46 +10,6 @@ from deform_conv import DeformConv2D
 
 from time import time
 
-# Training settings
-parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
-parser.add_argument('--batch-size', type=int, default=32, metavar='N',
-                    help='input batch size for training (default: 32)')
-parser.add_argument('--test-batch-size', type=int, default=32, metavar='N',
-                    help='input batch size for testing (default: 32)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
-                    help='number of epochs to train (default: 10)')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
-                    help='learning rate (default: 0.01)')
-parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
-                    help='SGD momentum (default: 0.5)')
-parser.add_argument('--no-cuda', action='store_true', default=False,
-                    help='disables CUDA training')
-parser.add_argument('--seed', type=int, default=1, metavar='S',
-                    help='random seed (default: 1)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-                    help='how many batches to wait before logging training status')
-args = parser.parse_args()
-args.cuda = not args.no_cuda and torch.cuda.is_available()
-
-torch.manual_seed(args.seed)
-if args.cuda:
-    torch.cuda.manual_seed(args.seed)
-
-kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('/home/chlin/data/dataset/MNIST', train=True, download=True,
-                   transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
-    batch_size=args.batch_size, shuffle=True, **kwargs)
-test_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('/home/chlin/data/dataset/MNIST', train=False, transform=transforms.Compose([
-                       transforms.ToTensor(),
-                       transforms.Normalize((0.1307,), (0.3081,))
-                   ])),
-    batch_size=args.test_batch_size, shuffle=True, **kwargs)
-
 
 class DeformNet(nn.Module):
     def __init__(self):
@@ -121,8 +81,6 @@ class PlainNet(nn.Module):
 
         return F.log_softmax(x, dim=1)
 
-model = DeformNet()
-
 
 def init_weights(m):
     if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
@@ -135,16 +93,6 @@ def init_conv_offset(m):
     m.weight.data = torch.zeros_like(m.weight.data)
     if m.bias is not None:
         m.bias.data = torch.FloatTensor(m.bias.shape[0]).zero_()
-
-
-model.apply(init_weights)
-model.offsets.apply(init_conv_offset)
-
-if args.cuda:
-    model.cuda()
-
-optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
-
 
 def train(epoch):
     model.train()
@@ -181,9 +129,65 @@ def test():
         100. * correct / len(test_loader.dataset)))
 
 
-for epoch in range(1, args.epochs + 1):
-    since = time()
-    train(epoch)
-    iter = time() - since
-    print("Spends {}s for each training epoch".format(iter/args.epochs))
-    test()
+if __name__ == '__main__':
+    # Training settings
+    parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
+    parser.add_argument('--batch-size', type=int, default=32, metavar='N',
+                        help='input batch size for training (default: 32)')
+    parser.add_argument('--test-batch-size', type=int, default=32, metavar='N',
+                        help='input batch size for testing (default: 32)')
+    parser.add_argument('--epochs', type=int, default=10, metavar='N',
+                        help='number of epochs to train (default: 10)')
+    parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+                        help='learning rate (default: 0.01)')
+    parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
+                        help='SGD momentum (default: 0.5)')
+    parser.add_argument('--no-cuda', action='store_true', default=False,
+                        help='disables CUDA training')
+    parser.add_argument('--seed', type=int, default=1, metavar='S',
+                        help='random seed (default: 1)')
+    parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+                        help='how many batches to wait before logging training status')
+    args = parser.parse_args()
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
+
+    torch.manual_seed(args.seed)
+    if args.cuda:
+        torch.cuda.manual_seed(args.seed)
+
+    kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
+    train_loader = torch.utils.data.DataLoader(
+        datasets.MNIST('/home/chlin/data/dataset/MNIST', train=True, download=True,
+                       transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=args.batch_size, shuffle=True, **kwargs)
+    test_loader = torch.utils.data.DataLoader(
+        datasets.MNIST('/home/chlin/data/dataset/MNIST', train=False, transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.1307,), (0.3081,))
+                       ])),
+        batch_size=args.test_batch_size, shuffle=True, **kwargs)
+
+
+    model = DeformNet()
+
+    model.apply(init_weights)
+    model.offsets.apply(init_conv_offset)
+
+    if args.cuda:
+        model.cuda()
+
+    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+
+    for epoch in range(1, args.epochs + 1):
+        since = time()
+        train(epoch)
+        iter = time() - since
+        print("Spends {}s for each training epoch".format(iter/args.epochs))
+        test()
+
+
+
+
